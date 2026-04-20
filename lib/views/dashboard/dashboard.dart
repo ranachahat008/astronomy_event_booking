@@ -1,6 +1,6 @@
 import 'package:astronomy_event_booking/controllers/dashboard_controller.dart';
 import 'package:astronomy_event_booking/views/dashboard/booking_screen.dart';
-import 'package:astronomy_event_booking/views/dashboard/home_screen.dart';
+import 'package:astronomy_event_booking/views/homepage/home_screen.dart';
 import 'package:astronomy_event_booking/views/dashboard/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
