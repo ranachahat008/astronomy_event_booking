@@ -1,5 +1,6 @@
 import 'package:astronomy_event_booking/initialBinding.dart';
 import 'package:astronomy_event_booking/views/auth/login_screen.dart';
+import 'package:astronomy_event_booking/views/splash/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: InitialBinding(),
-      home: SizedBox(),
+      home: SplashScreen(),
     );
   }
 }
