@@ -24,10 +24,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
-        body: screens[controller.index.value],
+        body: screens[controller.selectedIndex.value],
         bottomNavigationBar: BottomNavigationBar(
-            currentIndex: controller.index.value,
-            onTap: (i) => controller.index.value = i,
+            currentIndex: controller.selectedIndex.value,
+            onTap: (i) => controller.selectedIndex.value = i,
             items: [
               BottomNavigationBarItem(icon: Icon(CupertinoIcons.home),label: 'home'),
               BottomNavigationBarItem(icon: Icon(CupertinoIcons.book),label: 'bookings'),
