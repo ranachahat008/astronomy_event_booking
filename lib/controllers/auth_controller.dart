@@ -52,8 +52,8 @@ class AuthController extends GetxController {
         email: email,
         password: password,
       );
-    } catch (e) {
-      Get.snackbar("Error", e.toString());
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar("Error", e.code);
     }
   }
 
