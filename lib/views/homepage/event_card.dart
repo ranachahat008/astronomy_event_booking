@@ -37,7 +37,7 @@ class EventCard extends StatelessWidget {
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (_, _, _) => Container(
                   width: 100,
                   height: 100,
                   color: const Color(0xFF2D6A4F).withOpacity(0.1),
