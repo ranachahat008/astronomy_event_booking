@@ -114,11 +114,13 @@ class EventDetails extends StatelessWidget {
                   color: Colors.black87,
                 ),
                 validator: (val) {
-                  if (val == null || val.isEmpty)
+                  if (val == null || val.isEmpty) {
                     return 'Enter number of seats';
+                  }
                   final seats = int.tryParse(val);
-                  if (seats == null || seats <= 0)
+                  if (seats == null || seats <= 0) {
                     return 'Enter a valid number';
+                  }
                   if (seats > event.availableSeats) {
                     return 'Only ${event.availableSeats} seats available';
                   }
@@ -195,18 +197,18 @@ class EventDetails extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30),
-            ElevatedButton(
+            Obx(() => ElevatedButton(
               onPressed: bookingController.isBooked(event.id)
                   ? null
-                  : () => () {
-                      if (_formKey.currentState!.validate()) {
-                        bookingController.addBookings(
-                          event.id,
-                          event.name,
-                          int.parse(seatsController.text.trim()),
-                        );
-                      }
-                    },
+                  : () {
+                if (_formKey.currentState!.validate()) {
+                  bookingController.addBookings(
+                    event.id,
+                    event.name,
+                    int.parse(seatsController.text.trim()),
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 60),
                 backgroundColor: const Color(0xFF2D6A4F),
@@ -222,7 +224,7 @@ class EventDetails extends StatelessWidget {
                     ? "Already Booked"
                     : "Book Now",
               ),
-            ),
+            ),)
           ],
         ),
       ),
