@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "46130799501",
+    "project_id": "astronomy-event-booking",
+    "storage_bucket": "astronomy-event-booking.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46130799501:android:2503eb7021b27c7d7813c4",
+        "android_client_info": {
+          "package_name": "com.example.astronomy_event_booking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEgVcRMENQkRhRvmlyxJ4ZzWlYyQpc1Hs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
