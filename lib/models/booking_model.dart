@@ -1,10 +1,12 @@
 class BookingModel {
+  final String id;
   final String eventId;
   final String eventName;
   final int seats;
   final String userId;
 
   BookingModel({
+    required this.id,
     required this.eventId,
     required this.eventName,
     required this.seats,
@@ -20,8 +22,9 @@ class BookingModel {
     };
   }
 
-  BookingModel.fromJson(Map<String, dynamic> d)
-    : eventId = d['eventId'],
+  BookingModel.fromJson(String docId,Map<String, dynamic> d)
+    : id = docId,
+      eventId = d['eventId'],
       eventName = d['eventName'],
       seats = d['seats'],
       userId = d['userId'];

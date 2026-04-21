@@ -53,15 +53,50 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (_,_) => const SizedBox(height: 16),
-                itemCount: eventController.events.length,
-                itemBuilder: (context,index) {
-                  return EventCard(event: eventController.events[index]);
-                },
-              ),
-            ),
+            Obx(() {
+              if (eventController.isLoading.value) {
+                return const Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(color: Color(0xFF2D6A4F)),
+                  ),
+                );
+              }
+
+              if (eventController.events.isEmpty) {
+                return Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.nights_stay_outlined,
+                          size: 64,
+                          color: Colors.grey.shade300,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No events found',
+                          style: GoogleFonts.outfit(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return Expanded(
+                child: ListView.separated(
+                  separatorBuilder: (_, _) => const SizedBox(height: 16),
+                  itemCount: eventController.events.length,
+                  itemBuilder: (context, index) {
+                    return EventCard(event: eventController.events[index]);
+                  },
+                ),
+              );
+            }),
           ],
         ),
       ),

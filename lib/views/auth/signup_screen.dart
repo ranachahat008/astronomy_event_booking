@@ -1,3 +1,4 @@
+import 'package:astronomy_event_booking/controllers/event_controller.dart';
 import 'package:astronomy_event_booking/views/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final authController = Get.find<AuthController>();
+  final eventController = Get.find<EventController>();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 

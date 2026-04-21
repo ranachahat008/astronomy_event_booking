@@ -1,20 +1,34 @@
 import 'package:astronomy_event_booking/controllers/booking_controller.dart';
+import 'package:astronomy_event_booking/controllers/event_controller.dart';
 import 'package:astronomy_event_booking/models/event_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class EventDetails extends StatelessWidget {
+class EventDetails extends StatefulWidget {
   final EventModel event;
 
-  EventDetails({super.key, required this.event});
+  const EventDetails({super.key, required this.event});
 
+  @override
+  State<EventDetails> createState() => _EventDetailsState();
+}
+
+class _EventDetailsState extends State<EventDetails> {
   final bookingController = Get.find<BookingController>();
+
+  final eventController = Get.find<EventController>();
+
   final seatsController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   void _showBookingSheet(BuildContext context) {
+    final currentEvent = eventController.events.firstWhereOrNull(
+          (e) => e.id == widget.event.id,
+    );
+    final liveAvailableSeats = currentEvent?.availableSeats ?? 0;
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(24),
@@ -37,9 +51,11 @@ class EventDetails extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                event.name,
+                widget.event.name,
                 style: GoogleFonts.outfit(
-                    fontSize: 14, color: Colors.grey.shade500),
+                  fontSize: 14,
+                  color: Colors.grey.shade500,
+                ),
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -49,23 +65,31 @@ class EventDetails extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Number of Seats',
                   hintText: 'e.g. 2',
-                  prefixIcon: const Icon(Icons.event_seat_outlined,
-                      color: Color(0xFF2D6A4F)),
+                  prefixIcon: const Icon(
+                    Icons.event_seat_outlined,
+                    color: Color(0xFF2D6A4F),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: const BorderSide(
-                        color: Color(0xFF2D6A4F), width: 2),
+                      color: Color(0xFF2D6A4F),
+                      width: 2,
+                    ),
                   ),
                 ),
                 validator: (val) {
-                  if (val == null || val.isEmpty) return 'Enter number of seats';
+                  if (val == null || val.isEmpty) {
+                    return 'Enter number of seats';
+                  }
                   final seats = int.tryParse(val);
-                  if (seats == null || seats <= 0) return 'Enter a valid number';
-                  if (seats > event.availableSeats) {
-                    return 'Only ${event.availableSeats} seats available';
+                  if (seats == null || seats <= 0) {
+                    return 'Enter a valid number';
+                  }
+                  if (seats > liveAvailableSeats) {
+                    return 'Only $liveAvailableSeats seats available';
                   }
                   return null;
                 },
@@ -75,8 +99,8 @@ class EventDetails extends StatelessWidget {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     bookingController.addBookings(
-                      event.id,
-                      event.name,
+                      widget.event.id,
+                      widget.event.name,
                       int.parse(seatsController.text.trim()),
                     );
                     Get.back();
@@ -90,8 +114,10 @@ class EventDetails extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: Text('Confirm Booking',
-                    style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+                child: Text(
+                  'Confirm Booking',
+                  style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
+                ),
               ),
               const SizedBox(height: 8),
             ],
@@ -120,7 +146,7 @@ class EventDetails extends StatelessWidget {
                 ),
                 SizedBox(width: 5),
                 Text(
-                  event.name,
+                  widget.event.name,
                   style: GoogleFonts.outfit(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -132,7 +158,7 @@ class EventDetails extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: Image.network(
-                event.imageUrl,
+                widget.event.imageUrl,
                 width: double.infinity,
                 height: Get.width / 2,
                 fit: BoxFit.cover,
@@ -148,7 +174,7 @@ class EventDetails extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              "' ${event.description} '",
+              "' ${widget.event.description} '",
               style: GoogleFonts.outfit(
                 fontWeight: FontWeight.w500,
                 fontSize: 18,
@@ -160,56 +186,108 @@ class EventDetails extends StatelessWidget {
             Wrap(
               spacing: 15,
               children: [
-                _infoChip(CupertinoIcons.calendar, event.date),
-                _infoChip(CupertinoIcons.location, event.location),
+                _infoChip(CupertinoIcons.calendar, widget.event.date),
+                _infoChip(CupertinoIcons.location, widget.event.location),
               ],
             ),
             const SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2D6A4F).withOpacity(0.08),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
+            Obx(() {
+              final currentEvent = eventController.events.firstWhereOrNull(
+                (e) => e.id == widget.event.id,
+              );
+              final liveSeats = currentEvent?.availableSeats ?? widget.event.availableSeats;
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2D6A4F).withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.event_seat_outlined,
+                      color: Color(0xFF2D6A4F),
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      "$liveSeats seats available",
+                      style: GoogleFonts.outfit(
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF2D6A4F),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+            SizedBox(height: 30),
+            Obx(() {
+              final event = eventController.events.firstWhereOrNull(
+                (e) => e.id == widget.event.id,
+              );
+
+              final availableSeats = event?.availableSeats ?? 0;
+              final alreadyBookedSeats = bookingController.bookedSeatsForEvent(
+                widget.event.id,
+              );
+
+              return Column(
                 children: [
-                  const Icon(
-                    Icons.event_seat_outlined,
-                    color: Color(0xFF2D6A4F),
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "${event.availableSeats} seats available",
-                    style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF2D6A4F),
+                  if (alreadyBookedSeats > 0)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: Colors.blue.shade700,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'You have booked $alreadyBookedSeats seat(s). You can book more.',
+                            style: GoogleFonts.outfit(
+                              color: Colors.blue.shade700,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ElevatedButton(
+                    onPressed: availableSeats == 0
+                        ? null
+                        : () => _showBookingSheet(context),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 60),
+                      backgroundColor: const Color(0xFF2D6A4F),
+                      disabledBackgroundColor: Colors.grey.shade200,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: Text(
+                      availableSeats == 0
+                          ? "Sold Out"
+                          : alreadyBookedSeats > 0
+                          ? "Book More Seats"
+                          : "Book Now",
                     ),
                   ),
                 ],
-              ),
-            ),
-            SizedBox(height: 30),
-            Obx(() => ElevatedButton(
-              onPressed: bookingController.isBooked(event.id)
-                  ? null
-                  : () => _showBookingSheet(context),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 60),
-                backgroundColor: const Color(0xFF2D6A4F),
-                disabledBackgroundColor: Colors.grey.shade200,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 4,
-              ),
-              child: Text(
-                bookingController.isBooked(event.id)
-                    ? "Already Booked"
-                    : "Book Now",
-              ),
-            ),)
+              );
+            }),
           ],
         ),
       ),

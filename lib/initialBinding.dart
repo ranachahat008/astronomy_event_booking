@@ -9,7 +9,6 @@ class InitialBinding extends Bindings{
   void dependencies(){
     Get.put(DashboardController());
     Get.put(AuthController());
-    Get.put(BookingController());
     Get.put(EventController());
-  }
+    Get.put(BookingController());}
 }
