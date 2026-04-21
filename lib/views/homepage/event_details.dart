@@ -14,6 +14,94 @@ class EventDetails extends StatelessWidget {
   final seatsController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  void _showBookingSheet(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Book Seats',
+                style: GoogleFonts.outfit(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                event.name,
+                style: GoogleFonts.outfit(
+                    fontSize: 14, color: Colors.grey.shade500),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: seatsController,
+                keyboardType: TextInputType.number,
+                style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  labelText: 'Number of Seats',
+                  hintText: 'e.g. 2',
+                  prefixIcon: const Icon(Icons.event_seat_outlined,
+                      color: Color(0xFF2D6A4F)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(
+                        color: Color(0xFF2D6A4F), width: 2),
+                  ),
+                ),
+                validator: (val) {
+                  if (val == null || val.isEmpty) return 'Enter number of seats';
+                  final seats = int.tryParse(val);
+                  if (seats == null || seats <= 0) return 'Enter a valid number';
+                  if (seats > event.availableSeats) {
+                    return 'Only ${event.availableSeats} seats available';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    bookingController.addBookings(
+                      event.id,
+                      event.name,
+                      int.parse(seatsController.text.trim()),
+                    );
+                    Get.back();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 56),
+                  backgroundColor: const Color(0xFF2D6A4F),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Text('Confirm Booking',
+                    style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+      isScrollControlled: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,113 +190,10 @@ class EventDetails extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30),
-            Form(
-              key: _formKey,
-              child: TextFormField(
-                controller: seatsController,
-                keyboardType: TextInputType.number,
-                maxLines: 1,
-                style: GoogleFonts.outfit(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-                validator: (val) {
-                  if (val == null || val.isEmpty) {
-                    return 'Enter number of seats';
-                  }
-                  final seats = int.tryParse(val);
-                  if (seats == null || seats <= 0) {
-                    return 'Enter a valid number';
-                  }
-                  if (seats > event.availableSeats) {
-                    return 'Only ${event.availableSeats} seats available';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  prefixIcon: Container(
-                    margin: const EdgeInsets.all(12),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.event_seat_outlined,
-                      size: 18,
-                      color: Color(0xFF2D6A4F),
-                    ),
-                  ),
-                  labelText: "No of seats",
-                  labelStyle: GoogleFonts.outfit(
-                    color: Color(0xFF2D6A4F),
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                  ),
-                  hintText: 'e.g. 2',
-                  hintStyle: GoogleFonts.outfit(
-                    color: Color(0xFF2D6A4F),
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade100,
-                      width: 1,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade100,
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(
-                      color: Color(0xFF2D6A4F).withOpacity(0.7),
-                      width: 2,
-                    ),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(
-                      color: Colors.red.shade100,
-                      width: 1,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 20,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 30),
             Obx(() => ElevatedButton(
               onPressed: bookingController.isBooked(event.id)
                   ? null
-                  : () {
-                if (_formKey.currentState!.validate()) {
-                  bookingController.addBookings(
-                    event.id,
-                    event.name,
-                    int.parse(seatsController.text.trim()),
-                  );
-                }
-              },
+                  : () => _showBookingSheet(context),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 60),
                 backgroundColor: const Color(0xFF2D6A4F),

@@ -7,6 +7,12 @@ class BookingController extends GetxController {
   var bookings = <BookingModel>[].obs;
   var isLoading = false.obs;
 
+  @override
+  void onInit() {
+    fetchBooking();
+    super.onInit();
+  }
+
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
