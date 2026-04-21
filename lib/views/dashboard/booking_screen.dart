@@ -40,6 +40,15 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
               const SizedBox(height: 20),
               Obx(() {
+                if (bookingController.isLoading.value) {
+                  return Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF2D6A4F),
+                      ),
+                    ),
+                  );
+                }
                 if (bookingController.bookings.isEmpty) {
                   return Expanded(
                     child: Center(
@@ -131,7 +140,9 @@ class _BookingScreenState extends State<BookingScreen> {
                             ),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.green.shade50,
                                 borderRadius: BorderRadius.circular(20),
