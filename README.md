@@ -4,12 +4,6 @@ A Flutter mobile application that allows users to browse astronomy events and ma
 
 ---
 
-## 📸 Screenshots
-
-<!-- Add your screenshots here -->
-
----
-
 ## ✨ Features Implemented
 
 ### 🔐 Authentication
